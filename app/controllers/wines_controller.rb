@@ -11,5 +11,7 @@ class WinesController < ApplicationController
   end
 
   def show
-    @wine = Book.find(params[:id])
+    @wine = Wine.find(params[:id])
   end
+
+end
