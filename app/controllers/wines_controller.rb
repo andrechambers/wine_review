@@ -3,7 +3,7 @@ class WinesController < ApplicationController
   before_action :set_wine, only: [ :show, :edit, :update, :destroy ]
   def index
     @available_at =Time.now
-    @wines = Wine.all
+      @wines = Wine.order(:name).page(params[:page])
     # ["Atlas Shrugged", "Ender's Game", "Hamlet", "The Hobbit"]
   end
 
@@ -13,22 +13,29 @@ class WinesController < ApplicationController
 
   def create
     @wine = Wine.new(wine_params)
-    @wine.save
-    redirect_to @wine
+    if @wine.save
+      redirect_to @wine, notice: "#{@wine.name} was created!"
+    else
+      render :new
+    end
   end
 
   def show
-   # @wine = Wine.find(params[:id])
+    @wine = Wine.find(params[:id])
   end
 
   def edit
-    #@wine = Wine.find(params[:id])
+    @wine = Wine.find(params[:id])
   end
 
   def update
     #@wine = Wine.find(params[:id])
-    @wine.update(wine_params)
-    redirect_to @wine
+
+    if @wine.update(wine_params)
+      redirect_to @wine, notice: "#{@wine.name} was updated!"
+    else
+      render :edit
+    end
   end
 
   def destroy
