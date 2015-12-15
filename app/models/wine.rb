@@ -1,14 +1,20 @@
 class Wine < ActiveRecord::Base
-  VARIETALS = %w{Merlot Cabernet Chardonnay Pinot Riesling}
+  has_many :log_entry, dependent: :destroy
 
-validates :name, :year, :country, :varietal, presence: true
-
-validates :year,
-   numericality: { only_integer: true, greater_than_or_equal_to: 0 },
-   unless: "year.present?"
+  def average_reviews
+    log_entry.average(:rating)
+  end
 
 
-validates :varietal,
-    inclusion: { in: VARIETALS,
-    message: "%{value}  is not a valid option." }
+  VARIETALS = %w(Merlot Cabernet Chardonnay Pinot Riesling)
+
+  validates :name, :year, :country, :varietal, presence: true
+
+  validates :year,
+     numericality: { only_integer: true}
+
+
+  validates :varietal,
+      inclusion: { in: VARIETALS,
+      message: "%{value}  is not a valid option." }
 end
